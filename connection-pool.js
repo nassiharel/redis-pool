@@ -17,19 +17,21 @@ class ConnectionPool extends EventEmitter {
     let pool = this.connectionPool.get(key);
     if(!pool)
     {
-      let pool = this._createClient();
+      let pool = this._createClient(key);
     }
     return pool;
   }
   
-  _createClient()
+  _createClient(key)
   {
-    if(typeof this.createClientFactory === 'function')
-    {
+    if(typeof this.createClientFactory === 'function'){
       let client = this.createClientFactory();
-      
-      
-       
+      if(client)
+      {
+        this.connectionPool.set(key, client);
+      }
+    }
+    
   }
   
 }
