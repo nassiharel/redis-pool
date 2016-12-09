@@ -1,5 +1,6 @@
 
 var EventEmitter = require('events').EventEmitter;
+var redis = require('redis')
 const DEFAULT_KEY = 'default_client';
 
 class ConnectionPool extends EventEmitter {
@@ -30,6 +31,10 @@ class ConnectionPool extends EventEmitter {
       {
         this.connectionPool.set(key, client);
       }
+    }
+    else
+    {
+      
     }
     
   }
