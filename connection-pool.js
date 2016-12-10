@@ -8,20 +8,18 @@ class ConnectionPool extends EventEmitter {
   constructor(options) {
     super();
     this.connectionPool = new Map();
-  
   }
   
   createPool(options){
       let poolName = options.poolName || DEFAULT_POOL;
-      this.connectionPool.set(poolName, {options: options, clients: []});
+      this.connectionPool.set(poolName, {options: options.redis, clients: []});
   }
   
   createClient(options){
     let poolName = options.poolName || DEFAULT_POOL;
     let clientKey = options.key || DEFAULT_CLIENT_KEY;
     let pool = this.connectionPool.get(poolName);
-    if(!pool)
-    {
+    if(!pool){
       throw new Error('create pool must call first');
     }
     let client = this._createClient(clientKey, pool.options);
@@ -31,22 +29,16 @@ class ConnectionPool extends EventEmitter {
   }
   
   _createClient(key, poolOptions){
-    if(typeof this.createClientFactory === 'function'){
-      let client = this.createClientFactory();
-      if(client)
-      {
-        
-      }
-      else
-      {
-        
+    if(typeof poolOptions.createClientFactory === 'function'){
+      let client = poolOptions.createClientFactory();
+      if(!client){
+         throw new Error('create pool must call first');
       }
     }
-    else
-    {
-      client = redis.createClient(this.redisConfig.port, this.redisConfig.host, {});
+    else{
+      client = redis.createClient(poolOptions.redisConfig.port, poolOptions.redisConfig.host, poolOptions.options);
     }
-    
+    return client;
   }
   
 }
