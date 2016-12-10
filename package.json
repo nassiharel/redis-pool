@@ -1,0 +1,33 @@
+{
+  "name": "redis-pool",
+  "version": "0.0.1",
+  "description": "Redis Connection pool for node.js",
+  "keywords": [
+   "pool",
+    "redis"
+  ],
+  "license": "MIT",
+  "author": "Nassi Harel <>",
+  "contributors": [
+    {
+      "name": "",
+      "email": ""
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NassiHarel/redis-pool.git"
+  },
+  "dependencies": {
+    "redis": "~2.6.0-2"
+  },
+  "devDependencies": {
+    "chai": "^3.3.0",
+    "mocha": "^2.3.3",
+    "sinon": "^1.17.2",
+  },
+  "main": "index",
+  "scripts": {
+    "test": "make test-all"
+  }
+}
