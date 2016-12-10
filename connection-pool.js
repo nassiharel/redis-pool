@@ -1,10 +1,9 @@
+'use strict';
 
 var EventEmitter = require('events').EventEmitter;
 var redis = require("redis");
 const DEFAULT_CLIENT_KEY = 'default_client';
 const DEFAULT_POOL = 'default_pool';
-
-'use strict';
 
 const DEFAULT_REDIS = {
   host: '127.0.0.1',
@@ -20,7 +19,8 @@ class ConnectionPool extends EventEmitter {
   
   createPool(options){
       let poolName = options.poolName || DEFAULT_POOL;
-      this.connectionPool.set(poolName, {redisOptions: options.redisOptions, clients: []});
+      let redisOptions = options.redisOptions || DEFAULT_REDIS;
+      this.connectionPool.set(poolName, {redisOptions: redisOptions, clientFactory: clientFactory, clients: []});
   }
   
   createClient(options){
@@ -30,15 +30,15 @@ class ConnectionPool extends EventEmitter {
     if(!pool){
       throw new Error('create pool must call first');
     }
-    let client = this._createClient(clientKey, pool.redisOptions);
+    let client = this._createClient(clientKey, pool.redisOptions, pool.clientFactory);
     pool.clients.push(client);
     this.connectionPool.set(poolName, pool);
     return client;
   }
   
-  _createClient(key, redisOptions){
-    if(typeof poolOptions.createClientFactory === 'function'){
-      let client = poolOptions.createClientFactory();
+  _createClient(key, redisOptions, clientFactory){
+    if(typeof clientFactory === 'function'){
+      let client = clientFactory();
       if(!client){
          throw new Error('create pool must call first');
       }
