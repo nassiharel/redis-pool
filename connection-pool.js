@@ -4,7 +4,15 @@ var redis = require("redis");
 const DEFAULT_CLIENT_KEY = 'default_client';
 const DEFAULT_POOL = 'default_pool';
 
+'use strict';
+
+const DEFAULT_REDIS = {
+  host: '127.0.0.1',
+  port: 6379
+}
+
 class ConnectionPool extends EventEmitter {
+  
   constructor(options) {
     super();
     this.connectionPool = new Map();
@@ -12,7 +20,7 @@ class ConnectionPool extends EventEmitter {
   
   createPool(options){
       let poolName = options.poolName || DEFAULT_POOL;
-      this.connectionPool.set(poolName, {options: options.redis, clients: []});
+      this.connectionPool.set(poolName, {redisOptions: options.redisOptions, clients: []});
   }
   
   createClient(options){
@@ -22,13 +30,13 @@ class ConnectionPool extends EventEmitter {
     if(!pool){
       throw new Error('create pool must call first');
     }
-    let client = this._createClient(clientKey, pool.options);
+    let client = this._createClient(clientKey, pool.redisOptions);
     pool.clients.push(client);
     this.connectionPool.set(poolName, pool);
     return client;
   }
   
-  _createClient(key, poolOptions){
+  _createClient(key, redisOptions){
     if(typeof poolOptions.createClientFactory === 'function'){
       let client = poolOptions.createClientFactory();
       if(!client){
@@ -36,7 +44,7 @@ class ConnectionPool extends EventEmitter {
       }
     }
     else{
-      client = redis.createClient(poolOptions.redisConfig.port, poolOptions.redisConfig.host, poolOptions.options);
+      client = redis.createClient(redisOptions.port, redisOptions.host, redisOptions.options);
     }
     return client;
   }
