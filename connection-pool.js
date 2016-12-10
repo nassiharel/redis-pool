@@ -21,7 +21,8 @@ class ConnectionPool extends EventEmitter {
     let pool = this.connectionPool.get(key);
     if(!pool)
     {
-      let pool = this._createClient(key);
+       pool = this._createClient(k
+                                 create pool must call first')
     }
     return pool;
   }
