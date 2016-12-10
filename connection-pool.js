@@ -24,17 +24,18 @@ class ConnectionPool extends EventEmitter {
     {
       throw new Error('create pool must call first');
     }
-    pool.clients.push();
-    
-    return pool;
+    let client = this._createClient(clientKey, pool.options);
+    pool.clients.push(client);
+    this.connectionPool.set(poolName, pool);
+    return client;
   }
   
-  _createClient(key){
+  _createClient(key, poolOptions){
     if(typeof this.createClientFactory === 'function'){
       let client = this.createClientFactory();
       if(client)
       {
-        this.connectionPool.set(key, client);
+        
       }
       else
       {
