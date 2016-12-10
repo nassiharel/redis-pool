@@ -1,7 +1,7 @@
 
 var EventEmitter = require('events').EventEmitter;
 var redis = require("redis");
-const DEFAULT_CLIENT = 'default_client';
+const DEFAULT_CLIENT_KEY = 'default_client';
 const DEFAULT_POOL = 'default_pool';
 
 class ConnectionPool extends EventEmitter {
@@ -13,17 +13,19 @@ class ConnectionPool extends EventEmitter {
   
   createPool(options){
       let poolName = options.poolName || DEFAULT_POOL;
-      this.connectionPool.set(poolName, options);
+      this.connectionPool.set(poolName, {options: options, clients: []});
   }
   
   createClient(options){
-    let key = options.key || DEFAULT_KEY;
-    let pool = this.connectionPool.get(key);
+    let poolName = options.poolName || DEFAULT_POOL;
+    let clientKey = options.key || DEFAULT_CLIENT_KEY;
+    let pool = this.connectionPool.get(poolName);
     if(!pool)
     {
-       pool = this._createClient(k
-                                 create pool must call first')
+      throw new Error('create pool must call first');
     }
+    pool.clients.push();
+    
     return pool;
   }
   
