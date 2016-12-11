@@ -5,9 +5,15 @@ var redis = require('redis');
 const DEFAULT_CLIENT_KEY = 'default_client';
 const DEFAULT_POOL = 'default_pool';
 
-const DEFAULT_REDIS = {
+const DEFAULT_REDIS_OPTIONS = {
   host: '127.0.0.1',
-  port: 6379
+  port: 6379,
+  options: {}
+}
+
+const DEFAULT_POOL_OPTIONS ={
+  min: 1,
+  max: 5
 }
 
 class ConnectionPool extends EventEmitter {
