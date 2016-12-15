@@ -25,8 +25,13 @@ class ConnectionPool extends EventEmitter {
   
   createPool(options){
       let poolName = options.poolName || DEFAULT_POOL;
-      let redisOptions = options.redisOptions || DEFAULT_REDIS;
-      let pool = {redisOptions: redisOptions, clientFactory: options.clientFactory, clients: []};
+      let redisOptions = options.redisOptions || DEFAULT_REDIS_OPTIONS;
+      let pool = {
+        name: poolName,
+        redisOptions: redisOptions, 
+        clientFactory: options.clientFactory, 
+        clients: new Map()
+      };
       this.connectionPool.set(poolName, pool);
       return pool;
   }
@@ -37,12 +42,10 @@ class ConnectionPool extends EventEmitter {
     if(!pool){
         pool = this.createPool();
         let client = this._createClient(clientKey, pool.redisOptions, pool.clientFactory);
-        pool.clients.push(client);
-        this.connectionPool.set(poolName, pool);
+        pool.clients.set(clientKey, client);
+        this.connectionPool.set(pool.name, pool);
     }
-    
-    
-    return client;
+    return pool.clients.get(clientKey);
   }
   
   _getPool(){
