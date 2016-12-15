@@ -33,7 +33,7 @@ class ConnectionPool extends EventEmitter {
   
   createClient(options){
     let clientKey = options.key || DEFAULT_CLIENT_KEY;
-    let pool = this.connectionPool.get(options.poolName);
+    let pool = this._getPool(options.poolName);
     if(!pool){
         pool = this.createPool();
     }
@@ -41,6 +41,11 @@ class ConnectionPool extends EventEmitter {
     pool.clients.push(client);
     this.connectionPool.set(poolName, pool);
     return client;
+  }
+  
+  _getPool(){
+      let poolName = options.poolName || DEFAULT_POOL;
+      return this.connectionPool.get(poolName);
   }
   
   _createClient(key, redisOptions, clientFactory){
