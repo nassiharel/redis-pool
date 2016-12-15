@@ -62,6 +62,22 @@ var client = redisPool.createClient();
 calling the create client without any options, will first create a default connection pool,
 then it will create a client with default redis options and add it to the pool.
 
+```bash
+var redisPool = require('redis-pool');
+
+let options = {
+       poolName: 'my-pool',
+       clientKey: 'my-client',
+       redisOptions: {
+          host: '127.0.0.1',
+          port: 6379
+       },
+       clientFactory: () => { return client}
+}
+
+var client = redisPool.createClient(options);
+```
+
 ## Tests
 
   To run the test suite, first install the dependencies, then run `npm test`:
