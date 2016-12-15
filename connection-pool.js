@@ -24,12 +24,13 @@ class ConnectionPool extends EventEmitter {
   }
   
   createPool(options){
+      options = options || {};
       let poolName = options.poolName || DEFAULT_POOL;
       let redisOptions = options.redisOptions || DEFAULT_REDIS_OPTIONS;
       let pool = {
         name: poolName,
         redisOptions: redisOptions, 
-        clientFactory: options.clientFactory, 
+        clientFactory: options.clientFactory || null, 
         clients: new Map()
       };
       this.connectionPool.set(poolName, pool);
@@ -37,6 +38,7 @@ class ConnectionPool extends EventEmitter {
   }
   
   createClient(options){
+    options = options || {};
     let clientKey = options.key || DEFAULT_CLIENT_KEY;
     let pool = this._getPool(options.poolName);
     if(!pool){
@@ -44,18 +46,21 @@ class ConnectionPool extends EventEmitter {
         let client = this._createClient(clientKey, pool.redisOptions, pool.clientFactory);
         pool.clients.set(clientKey, client);
         this.connectionPool.set(pool.name, pool);
+        console.log(this.connectionPool);
     }
     return pool.clients.get(clientKey);
   }
   
-  _getPool(){
+  _getPool(options){
+      options = options || {};
       let poolName = options.poolName || DEFAULT_POOL;
       return this.connectionPool.get(poolName);
   }
   
   _createClient(key, redisOptions, clientFactory){
+    let client = null;
     if(typeof clientFactory === 'function'){
-      let client = clientFactory();
+      client = clientFactory();
       if(!client){
          throw new Error('clientFactory must return client');
       }
@@ -65,5 +70,6 @@ class ConnectionPool extends EventEmitter {
     }
     return client;
   }
-  
 }
+
+module.exports = new ConnectionPool();
