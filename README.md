@@ -66,7 +66,7 @@ then it will create a client with default redis options and add it to the pool.
 var redisPool = require('redis-pool');
 
 let options = {
-       poolName: 'my-pool',
+       poolKey: 'my-pool',
        clientKey: 'my-client',
        redisOptions: {
           host: '127.0.0.1',

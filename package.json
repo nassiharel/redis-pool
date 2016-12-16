@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Redis Connection pool for node.js",
   "keywords": [
-   "pool",
+    "pool",
     "redis"
   ],
   "license": "MIT",
@@ -13,6 +13,7 @@
     "url": "https://github.com/NassiHarel/redis-pool.git"
   },
   "dependencies": {
+    "ioredis": "^2.4.3",
     "redis": "~2.6.0-2"
   },
   "devDependencies": {
