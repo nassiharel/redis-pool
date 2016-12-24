@@ -2,11 +2,27 @@
 
 var Redis = require('ioredis');
 var redisPool = require('./index');
-//var client = redisPool.createClient();
 
-// client.on('ready', () => {
-//     console.log('ready');
-// });
+redisPool.on('pool-created', (pool) => {
+    console.log('pool-created', pool);
+});
+
+var client1 = redisPool.createClient();
+var client2 = redisPool.createClient();
+var client3 = redisPool.createClient();
+
+client1.on('ready', () => {
+    console.log('ready1');
+});
+
+client2.on('ready', () => {
+    console.log('ready2');
+});
+
+client3.on('ready', () => {
+    console.log('ready3');
+});
+
 
 
 function clientFactory() {
@@ -21,12 +37,12 @@ function clientFactory() {
 
 let options = {
     poolKey: 'my-pool',
-    redisOptions: {
-        host: '127.0.0.1',
-        port: 6379
-    },
     clientFactory: clientFactory
 }
 
 redisPool.createPool(options);
-console.log(redisPool.connectionPool);
+var client4 = redisPool.createClient(options);
+
+client4.on('ready', () => {
+    console.log('ready4');
+});
