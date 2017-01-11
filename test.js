@@ -7,23 +7,11 @@ redisPool.on('pool-created', (pool) => {
     console.log('pool-created', pool);
 });
 
-var client1 = redisPool.createClient();
-var client2 = redisPool.createClient();
-var client3 = redisPool.createClient();
+// var client = redisPool.createClient();
 
-client1.on('ready', () => {
-    console.log('ready1');
-});
-
-client2.on('ready', () => {
-    console.log('ready2');
-});
-
-client3.on('ready', () => {
-    console.log('ready3');
-});
-
-
+// client.on('ready', () => {
+//     console.log('ready1');
+// });
 
 function clientFactory() {
     return new Redis({
@@ -41,8 +29,8 @@ let options = {
 }
 
 redisPool.createPool(options);
-var client4 = redisPool.createClient(options);
+var client = redisPool.createClient(options);
 
-client4.on('ready', () => {
+client.on('ready', () => {
     console.log('ready4');
 });
