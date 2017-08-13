@@ -3,10 +3,6 @@
 var Redis = require('ioredis');
 var redisPool = require('./index');
 
-redisPool.on('pool-created', (pool) => {
-    console.log('pool-created', pool);
-});
-
 // var client = redisPool.createClient();
 
 // client.on('ready', () => {
@@ -25,8 +21,17 @@ function clientFactory() {
 
 let options = {
     poolKey: 'my-pool',
-    clientFactory: clientFactory
+    clientFactory: clientFactory,
+    redisOptions: {
+        port: 6379,
+        options: {}
+    },
+    poolOptions: {
+        min: 1,
+        max: 5
+    }
 }
+
 
 redisPool.createPool(options);
 var client = redisPool.createClient(options);
