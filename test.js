@@ -21,6 +21,7 @@ function clientFactory() {
 
 let options = {
     poolKey: 'my-pool',
+    clientKey: 'my-pool',
     clientFactory: clientFactory,
     redisOptions: {
         port: 6379,
@@ -28,14 +29,28 @@ let options = {
     },
     poolOptions: {
         min: 1,
-        max: 5
+        max: 2
     }
 }
 
+async function start() {
+    const pr = redisPool.createPool(options);
+    var client1 = await redisPool.createClient(options);
+    var client2 = await redisPool.createClient(options);
 
-redisPool.createPool(options);
-var client = redisPool.createClient(options);
+    setTimeout(() => {
+        redisPool.releaseClient(client1, options);
+    }, 2000);
 
-client.on('ready', () => {
-    console.log('ready4');
-});
+     setTimeout(() => {
+        redisPool.releaseClient(client2, options);
+    }, 3000);
+
+    var client3 = await redisPool.createClient(options);
+    var client4 = await redisPool.createClient(options);
+    var client5 = await redisPool.createClient(options);
+    var client6 = await redisPool.createClient(options);
+};
+
+start();
+
