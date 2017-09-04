@@ -3,15 +3,10 @@ Node Redis Connection pool
 
 Work in progress...
 
-```js
-var redisPool = require('redis-pool');
-redisPool.createPool
-```
-
 ## Installation
 
 ```bash
-$ npm install redis-pool
+$ npm install redis-pool --save
 ```
 
 ## Features
@@ -55,27 +50,47 @@ $ npm start
 
 Create client:
 
-```bash
-var redisPool = require('redis-pool');
-var client = redisPool.createClient();
+```js
+const redisPool = require('redis-pool');
+const client = redisPool.createClient();
 ```
 calling the create client without any options, will first create a default connection pool,
 then it will create a client with default redis options and add it to the pool.
 
-```bash
-var redisPool = require('redis-pool');
+```js
+const redisPool = require('redis-pool');
+const Redis = require('ioredis');
 
-let options = {
-       poolKey: 'my-pool',
-       clientKey: 'my-client',
-       redisOptions: {
-          host: '127.0.0.1',
-          port: 6379
-       },
-       clientFactory: () => { return client}
+function clientFactory() {
+    return new Redis({
+        sentinels: [{
+            host: 'localhost',
+            port: 26379
+        }],
+        name: 'mymaster'
+    });
 }
 
-var client = redisPool.createClient(options);
+const options = {
+    poolKey: 'my-pool',
+    clientKey: 'my-pool',
+    clientFactory: clientFactory,
+    redisOptions: {
+        host: '127.0.0.1',
+        port: 6379,
+        options: {}
+    },
+    poolOptions: {
+        min: 1,
+        max: 2
+    }
+}
+
+redisPool.createClient(options);
+
+const client1 = await redisPool.createClient(options);
+const client2 = await redisPool.createClient(options);
+
 ```
 
 ## Tests

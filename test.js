@@ -1,7 +1,7 @@
 'use strict';
 
-var Redis = require('ioredis');
-var redisPool = require('./index');
+const Redis = require('ioredis');
+const redisPool = require('./index');
 
 // var client = redisPool.createClient();
 
@@ -19,9 +19,8 @@ function clientFactory() {
     });
 }
 
-let options = {
+const poolOptions = {
     poolKey: 'my-pool',
-    clientKey: 'my-pool',
     clientFactory: clientFactory,
     redisOptions: {
         port: 6379,
@@ -33,23 +32,27 @@ let options = {
     }
 }
 
+const clientOptions = {
+    poolKey: 'my-pool'
+}
+
 async function start() {
-    const pr = redisPool.createPool(options);
-    var client1 = await redisPool.createClient(options);
-    var client2 = await redisPool.createClient(options);
+    redisPool.createPool(poolOptions);
+    var client1 = await redisPool.createClient(clientOptions);
+    var client2 = await redisPool.createClient(clientOptions);
 
     setTimeout(() => {
-        redisPool.releaseClient(client1, options);
+        redisPool.releaseClient(client1, clientOptions);
     }, 2000);
 
      setTimeout(() => {
-        redisPool.releaseClient(client2, options);
+        redisPool.releaseClient(client2, clientOptions);
     }, 3000);
 
-    var client3 = await redisPool.createClient(options);
-    var client4 = await redisPool.createClient(options);
-    var client5 = await redisPool.createClient(options);
-    var client6 = await redisPool.createClient(options);
+    // var client3 = await redisPool.createClient(clientOptions);
+    // var client4 = await redisPool.createClient(clientOptions);
+    // var client5 = await redisPool.createClient(clientOptions);
+    // var client6 = await redisPool.createClient(clientOptions);
 };
 
 start();
