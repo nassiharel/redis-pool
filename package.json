@@ -17,7 +17,7 @@
     "generic-pool": "^3.1.7",
     "ioredis": "^2.4.3",
     "lodash.defaults": "^4.2.0",
-    "redis": "~2.6.0-2"
+    "redis": "~3.1.1"
   },
   "devDependencies": {
     "chai": "^3.3.0",
